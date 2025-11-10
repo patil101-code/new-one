@@ -1,0 +1,69 @@
+CREATE TABLE Student (
+    roll_no INT PRIMARY KEY,
+    name VARCHAR(100),
+    subject_name VARCHAR(100),
+    subject_opted VARCHAR(100)
+);
+
+CREATE TABLE Faculty (
+    faculty_code INT PRIMARY KEY,
+    faculty_name VARCHAR(100),
+    specialization VARCHAR(100)
+);
+
+CREATE TABLE Subject (
+    subject_code INT PRIMARY KEY,
+    subject_name VARCHAR(100),
+    faculty_code INT,
+    FOREIGN KEY (faculty_code) REFERENCES Faculty(faculty_code)
+);
+
+INSERT INTO Student VALUES
+(1, 'Anil', 'DBMS', 'DBMS'),
+(2, 'Riya', 'OS', 'OS'),
+(3, 'Manish', 'DBMS', 'DBMS'),
+(4, 'Priya', 'Java', 'Java'),
+(5, 'Rohan', 'DBMS', 'DBMS'),
+(6, 'Simran', 'Python', 'Python'),
+(7, 'Arjun', 'OS', 'OS'),
+(8, 'Kunal', 'Networks', 'Networks');
+
+INSERT INTO Faculty VALUES
+(101, 'Dr. Mehta', 'Databases'),
+(102, 'Dr. Sharma', 'Operating Systems'),
+(103, 'Dr. Kaur', 'Networks'),
+(104, 'Dr. Gupta', 'Programming'),
+(105, 'Dr. Roy', 'Cyber Security'),
+(106, 'Dr. Nanda', 'AI'),
+(107, 'Dr. Bose', 'Cloud Computing'),
+(108, 'Dr. Sen', 'Software Engineering');
+
+INSERT INTO Subject VALUES
+(201, 'DBMS', 101),
+(202, 'OS', 102),
+(203, 'Networks', 103),
+(204, 'Java', 104),
+(205, 'Python', NULL),
+(206, 'Cyber Security', NULL),
+(207, 'Cloud Computing', NULL),
+(208, 'AI', NULL);
+
+SELECT * FROM Student;
+SELECT * FROM Faculty;
+SELECT * FROM Subject;
+
+SELECT COUNT(*) AS Number_of_Students
+FROM Student
+WHERE subject_opted = 'DBMS';
+
+SELECT *
+FROM Faculty
+WHERE faculty_code NOT IN (
+    SELECT DISTINCT faculty_code
+    FROM Subject
+    WHERE faculty_code IS NOT NULL
+);
+
+SELECT *
+FROM Subject
+WHERE faculty_code IS NULL;
