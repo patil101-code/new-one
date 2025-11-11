@@ -1,0 +1,81 @@
+CREATE TABLE person (
+    driver_id INT PRIMARY KEY,
+    name VARCHAR(100),
+    address VARCHAR(255)
+);
+
+CREATE TABLE car (
+    license VARCHAR(20) PRIMARY KEY,
+    model VARCHAR(100),
+    year INT
+);
+
+CREATE TABLE accident (
+    report_no INT PRIMARY KEY,
+    date DATE,
+    location VARCHAR(100)
+);
+
+CREATE TABLE owns (
+    driver_id INT,
+    license VARCHAR(20),
+    FOREIGN KEY (driver_id) REFERENCES person(driver_id),
+    FOREIGN KEY (license) REFERENCES car(license)
+);
+
+CREATE TABLE participated (
+    driver_id INT,
+    car VARCHAR(20),
+    report_no INT,
+    damage_amount DECIMAL(10,2),
+    FOREIGN KEY (driver_id) REFERENCES person(driver_id),
+    FOREIGN KEY (car) REFERENCES car(license),
+    FOREIGN KEY (report_no) REFERENCES accident(report_no)
+);
+
+INSERT INTO person VALUES
+(1, 'Amit Sharma', 'Pune'),
+(2, 'Rohit Mehta', 'Mumbai'),
+(3, 'Sneha Kulkarni', 'Pune');
+
+INSERT INTO car VALUES
+('MH12AB1234', 'Honda City', 2015),
+('DL01EF2345', 'Hyundai i20', 2013),
+('MH14CD5678', 'Maruti Swift', 2016);
+
+INSERT INTO accident VALUES
+(101, '2016-02-10', 'Pune'),
+(102, '2017-01-05', 'Delhi'),
+(103, '2016-11-13', 'Mumbai');
+
+INSERT INTO owns VALUES
+(1, 'MH12AB1234'),
+(1, 'MH14CD5678'),
+(3, 'DL01EF2345');
+
+INSERT INTO participated VALUES
+(1, 'MH12AB1234', 101, 5000),
+(1, 'MH14CD5678', 103, 15000),
+(3, 'DL01EF2345', 102, 8000);
+
+SELECT * FROM person;
+SELECT * FROM car;
+SELECT * FROM accident;
+SELECT * FROM owns;
+SELECT * FROM participated;
+
+SELECT COUNT(DISTINCT o.driver_id) AS total_people
+FROM owns o
+JOIN participated p ON o.license = p.car
+JOIN accident a ON p.report_no = a.report_no
+WHERE YEAR(a.date) = 2016;
+
+SELECT name
+FROM person
+WHERE address LIKE '%Pune%';
+
+SELECT p.name
+FROM person p
+JOIN owns o ON p.driver_id = o.driver_id
+GROUP BY p.driver_id, p.name
+HAVING COUNT(o.license) > 2;
